@@ -3,15 +3,15 @@ variable "REGISTRY" {
 }
 
 variable "REGISTRY_USER" {
-    default = "ashleykza"
+    default = "kiliankaeslin"
 }
 
 variable "APP" {
-    default = "comfyui"
+    default = "comfy-5090-custom-2"
 }
 
 variable "RELEASE" {
-    default = "v0.8.2"
+    default = "1.0.5"
 }
 
 variable "RELEASE_SUFFIX" {
@@ -32,6 +32,10 @@ variable "APP_MANAGER_VERSION" {
 
 variable "CIVITAI_DOWNLOADER_VERSION" {
     default = "2.1.0"
+}
+
+variable "COMFYUI_COMMIT" {
+    default = "HEAD"
 }
 
 group "default" {
@@ -56,7 +60,7 @@ target "cu124-py311" {
         INDEX_URL                  = "https://download.pytorch.org/whl/cu124"
         TORCH_VERSION              = "2.6.0+cu124"
         XFORMERS_VERSION           = "0.0.29.post3"
-        COMFYUI_VERSION            = "${RELEASE}"
+        COMFYUI_COMMIT             = "${COMFYUI_COMMIT}"
         APP_MANAGER_VERSION        = "${APP_MANAGER_VERSION}"
         CIVITAI_DOWNLOADER_VERSION = "${CIVITAI_DOWNLOADER_VERSION}"
     }
@@ -72,7 +76,7 @@ target "cu124-py312" {
         INDEX_URL                  = "https://download.pytorch.org/whl/cu124"
         TORCH_VERSION              = "2.6.0+cu124"
         XFORMERS_VERSION           = "0.0.29.post3"
-        COMFYUI_VERSION            = "${RELEASE}"
+        COMFYUI_COMMIT             = "${COMFYUI_COMMIT}"
         APP_MANAGER_VERSION        = "${APP_MANAGER_VERSION}"
         CIVITAI_DOWNLOADER_VERSION = "${CIVITAI_DOWNLOADER_VERSION}"
     }
@@ -88,7 +92,7 @@ target "cu128-py311" {
         INDEX_URL                  = "https://download.pytorch.org/whl/cu128"
         TORCH_VERSION              = "2.9.1+cu128"
         XFORMERS_VERSION           = "0.0.33"
-        COMFYUI_VERSION            = "${RELEASE}"
+        COMFYUI_COMMIT             = "${COMFYUI_COMMIT}"
         APP_MANAGER_VERSION        = "${APP_MANAGER_VERSION}"
         CIVITAI_DOWNLOADER_VERSION = "${CIVITAI_DOWNLOADER_VERSION}"
     }
@@ -97,14 +101,14 @@ target "cu128-py311" {
 
 target "cu128-py312" {
     dockerfile = "Dockerfile"
-    tags = ["${REGISTRY}/${REGISTRY_USER}/${APP}:cu128-py312-${RELEASE}${RELEASE_SUFFIX}"]
+    tags = ["${REGISTRY}/${REGISTRY_USER}/${APP}:${RELEASE}${RELEASE_SUFFIX}"]
     args = {
         RELEASE                    = "${RELEASE}"
         BASE_IMAGE                 = "${BASE_IMAGE_REPOSITORY}:${BASE_IMAGE_VERSION}-python3.12-cuda12.8.1-torch2.9.1"
         INDEX_URL                  = "https://download.pytorch.org/whl/cu128"
         TORCH_VERSION              = "2.9.1+cu128"
         XFORMERS_VERSION           = "0.0.33"
-        COMFYUI_VERSION            = "${RELEASE}"
+        COMFYUI_COMMIT             = "${COMFYUI_COMMIT}"
         APP_MANAGER_VERSION        = "${APP_MANAGER_VERSION}"
         CIVITAI_DOWNLOADER_VERSION = "${CIVITAI_DOWNLOADER_VERSION}"
     }

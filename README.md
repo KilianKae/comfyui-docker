@@ -1,147 +1,328 @@
-<div align="center">
+# ComfyUI Production Docker
 
-# Docker image for ComfyUI: The most powerful and modular stable diffusion GUI, api and backend with a graph/nodes interface.
+A production-grade Docker setup for ComfyUI with automated model downloading, 50+ pre-installed custom nodes, and optimized for RunPod cloud deployment.
 
-[![GitHub Repo](https://img.shields.io/badge/github-repo-green?logo=github)](https://github.com/ashleykleynhans/comfyui-docker)
-[![Docker Image Version (latest semver)](https://img.shields.io/docker/v/ashleykza/comfyui?logo=docker&label=dockerhub&color=blue)](https://hub.docker.com/repository/docker/ashleykza/comfyui)
-[![RunPod.io Template](https://img.shields.io/badge/runpod_template-deploy-9b4ce6?logo=linuxcontainers&logoColor=9b4ce6)](https://runpod.io/console/deploy?template=9eqyhd7vs0&ref=2xxro4sy)
-<br>
-![Docker Pulls](https://img.shields.io/docker/pulls/ashleykza/comfyui?style=for-the-badge&logo=docker&label=Docker%20Pulls&link=https%3A%2F%2Fhub.docker.com%2Frepository%2Fdocker%2Fashleykza%2Fcomfyui%2Fgeneral)
-![Template Version](https://img.shields.io/github/v/tag/ashleykleynhans/comfyui-docker?style=for-the-badge&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI2LjUuMywgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCAyMDAwIDIwMDAiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDIwMDAgMjAwMDsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgoJLnN0MHtmaWxsOiM2NzNBQjc7fQo8L3N0eWxlPgo8Zz4KCTxnPgoJCTxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik0xMDE3Ljk1LDcxMS4wNGMtNC4yMiwyLjM2LTkuMTgsMy4wMS0xMy44NiwxLjgyTDM4Ni4xNyw1NTUuM2MtNDEuNzItMTAuNzYtODYuMDItMC42My0xMTYuNiwyOS43MwoJCQlsLTEuNCwxLjM5Yy0zNS45MiwzNS42NS0yNy41NSw5NS44LDE2Ljc0LDEyMC4zbDU4NC4zMiwzMjQuMjNjMzEuMzYsMTcuNCw1MC44Miw1MC40NSw1MC44Miw4Ni4zMnY4MDYuNzYKCQkJYzAsMzUuNDktMzguNDEsNTcuNjctNjkuMTUsMzkuOTRsLTcwMy4xNS00MDUuNjRjLTIzLjYtMTMuNjEtMzguMTMtMzguNzgtMzguMTMtNjYuMDJWNjY2LjYzYzAtODcuMjQsNDYuNDUtMTY3Ljg5LDEyMS45Mi0yMTEuNjYKCQkJTDkzMy44NSw0Mi4xNWMyMy40OC0xMy44LDUxLjQ3LTE3LjcsNzcuODMtMTAuODRsNzQ1LjcxLDE5NC4xYzMxLjUzLDguMjEsMzYuOTksNTAuNjUsOC41Niw2Ni41N0wxMDE3Ljk1LDcxMS4wNHoiLz4KCQk8cGF0aCBjbGFzcz0ic3QwIiBkPSJNMTUyNy43NSw1MzYuMzhsMTI4Ljg5LTc5LjYzbDE4OS45MiwxMDkuMTdjMjcuMjQsMTUuNjYsNDMuOTcsNDQuNzMsNDMuODIsNzYuMTVsLTQsODU3LjYKCQkJYy0wLjExLDI0LjM5LTEzLjE1LDQ2Ljg5LTM0LjI1LDU5LjExbC03MDEuNzUsNDA2LjYxYy0zMi4zLDE4LjcxLTcyLjc0LTQuNTktNzIuNzQtNDEuOTJ2LTc5Ny40MwoJCQljMC0zOC45OCwyMS4wNi03NC45MSw1NS4wNy05My45Nmw1OTAuMTctMzMwLjUzYzE4LjIzLTEwLjIxLDE4LjY1LTM2LjMsMC43NS00Ny4wOUwxNTI3Ljc1LDUzNi4zOHoiLz4KCQk8cGF0aCBjbGFzcz0ic3QwIiBkPSJNMTUyNC4wMSw2NjUuOTEiLz4KCTwvZz4KPC9nPgo8L3N2Zz4K&logoColor=%23ffffff&label=Template%20Version&color=%23673ab7)
+## Features
 
-</div>
+- **Multi-Variant Builds**: Support for CUDA 12.4/12.8 with Python 3.11/3.12
+- **50+ Custom Nodes**: Pre-installed custom nodes including Login, KJNodes, RMBG, SAM2, JoyCaption, and more
+- **Automated Model Downloading**: Runtime model provisioning from Hugging Face, CivitAI, and direct URLs
+- **Production Ready**: NGINX reverse proxy, App Manager, persistent storage sync
+- **RunPod Optimized**: Intelligent syncing for RunPod network volumes
+- **Flexible Configuration**: Environment variable-based model provisioning
 
-## Installs
+## Quick Start
 
-* Ubuntu 22.04 LTS
-* CUDA 12.8 / 12.4 (12.8 is default)
-* Python 3.12.9 / 3.11.12 (3.12.9 is default)
-* Torch 2.9.1 / 2.6.0 (2.9.1 is default)
-* xformers 0.0.33 / 0.0.29.post3 (0.0.33 is default)
-* [Jupyter Lab](https://github.com/jupyterlab/jupyterlab)
-* [code-server](https://github.com/coder/code-server)
-* [ComfyUI](https://github.com/comfyanonymous/ComfyUI) v0.8.2
-* [runpodctl](https://github.com/runpod/runpodctl)
-* [OhMyRunPod](https://github.com/kodxana/OhMyRunPod)
-* [RunPod File Uploader](https://github.com/kodxana/RunPod-FilleUploader)
-* [croc](https://github.com/schollz/croc)
-* [rclone](https://rclone.org/)
-* [Application Manager](https://github.com/ashleykleynhans/app-manager)
-* [CivitAI Downloader](https://github.com/ashleykleynhans/civitai-downloader)
-
-## Available on RunPod
-
-This image is designed to work on [RunPod](https://runpod.io?ref=2xxro4sy).
-
-There are options for both CUDA 12.4 (for **non 5090** GPU types),
-and CUDA 12.8 (for the **RTX 5090** GPU type).
-
-There are also options for Python 3.11 and Python 3.12 for each since
-some ComfyUI custom nodes require Python 3.11 and don't work correctly
-with Python 3.12.
-
-Click on the appropriate link below to deploy the template of your choice on Runpod.
-
-| Runpod Template Version                                                                      | Runpod Template Description                                            |
-|----------------------------------------------------------------------------------------------|------------------------------------------------------------------------|
-| [CUDA 12.4 + Python 3.11](https://runpod.io/console/deploy?template=ymfa1ds0d1&ref=2xxro4sy) | Template with CUDA 12.4 and Python 3.11 for **non-RTX 5090** GPU types |
-| [CUDA 12.4 + Python 3.12](https://runpod.io/console/deploy?template=9eqyhd7vs0&ref=2xxro4sy) | Template with CUDA 12.4 and Python 3.12 for **non-RTX 5090** GPU types |
-| [CUDA 12.8 + Python 3.11](https://runpod.io/console/deploy?template=moapg9g7mn&ref=2xxro4sy) | Template with CUDA 12.8 and Python 3.11 for **RTX 5090** GPU type      |
-| [CUDA 12.8 + Python 3.12](https://runpod.io/console/deploy?template=jv061dyevn&ref=2xxro4sy) | Template with CUDA 12.8 and Python 3.12 for **RTX 5090** GPU type      |
-
-
-## Building the Docker image
-
-> [!NOTE]
-> You will need to edit the `docker-bake.hcl` file and update `REGISTRY_USER`,
-> and `RELEASE`.  You can obviously edit the other values too, but these
-> are the most important ones.
-
-> [!IMPORTANT]
-> In order to cache the models, you will need at least 32GB of CPU/system
-> memory (not VRAM) due to the large size of the models.  If you have less
-> than 32GB of system memory, you can comment out or remove the code in the
-> `Dockerfile` that caches the models.
+### Building the Image
 
 ```bash
-# Clone the repo
-git clone https://github.com/ashleykleynhans/comfyui-docker.git
+# Build default variant (CUDA 12.8, Python 3.12 - RTX 5090)
+docker buildx bake
 
-# Log in to Docker Hub
-docker login
+# Build specific variant (CUDA 12.4, Python 3.11 - RTX 4090, A6000)
+docker buildx bake cu124-py311
 
-# Build the default image (CUDA 12.8 and Python 3.12), tag the image, and push the image to Docker Hub
-docker buildx bake -f docker-bake.hcl --push
-
-# OR build a different image (eg. CUDA 12.4 and Python 3.11), tag the image, and push the image to Docker Hub
-docker buildx bake -f docker-bake.hcl cu124-py311 --push
-
-# OR build ALL images, tag the images, and push the images to Docker Hub
-docker buildx bake -f docker-bake.hcl all --push
-
-# Same as above but customize registry/user/release:
-REGISTRY=ghcr.io REGISTRY_USER=myuser RELEASE=my-release docker buildx \
-    bake -f docker-bake.hcl --push
+# Build all variants
+docker buildx bake all
 ```
 
-## Running Locally
+### Running the Container
 
-### Install Nvidia CUDA Driver
-
-- [Linux](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html)
-- [Windows](https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html)
-
-### Start the Docker container
+#### Basic Usage
 
 ```bash
-docker run -d \
-  --gpus all \
-  -v /workspace \
-  -p 2999:2999 \
-  -p 3000:3001 \
-  -p 7777:7777 \
+docker run -it --gpus all \
+  -p 3000:3000 \
   -p 8000:8000 \
-  -p 8888:8888 \
-  -e JUPYTER_PASSWORD=Jup1t3R! \
-  -e EXTRA_ARGS=--lowvram --disable-xformers \
-  ashleykza/comfyui:latest
+  -v $(pwd)/workspace:/workspace \
+  kiliankaslin/comfyui-production:cu128-py312-v1.0.0
 ```
 
-You can obviously substitute the image name and tag with your own.
+#### With Model Provisioning
 
-### Ports
+```bash
+docker run -it --gpus all \
+  -p 3000:3000 \
+  -p 8000:8000 \
+  -v $(pwd)/workspace:/workspace \
+  -e HF_MODEL_DIFFUSION_MODELS1=Comfy-Org/flux1-dev \
+  -e HF_MODEL_DIFFUSION_MODELS_FILENAME1=flux1-dev.safetensors \
+  -e HF_MODEL_TEXT_ENCODERS1=comfyanonymous/flux_text_encoders \
+  -e HF_MODEL_TEXT_ENCODERS_FILENAME1=t5xxl_fp16.safetensors \
+  -e CIVITAI_TOKEN=your_civitai_api_token \
+  -e CIVITAI_MODEL_LORA_URL1=https://civitai.com/api/download/models/123456 \
+  kiliankaslin/comfyui-production:cu128-py312-v1.0.0
+```
 
-| Connect Port | Internal Port | Description          |
-|--------------|---------------|----------------------|
-| 3000         | 3001          | ComfyUI              |
-| 7777         | 7777          | Code Server          |
-| 8000         | 8000          | Application Manager  |
-| 8888         | 8888          | Jupyter Lab          |
-| 2999         | 2999          | Runpod File Uploader |
+## Environment Variables
 
-### Environment Variables
+### Service Configuration
 
-| Variable             | Description                                                                                 | Default               |
-|----------------------|---------------------------------------------------------------------------------------------|-----------------------|
-| JUPYTER_LAB_PASSWORD | Set a password for Jupyter lab                                                              | not set - no password |
-| DISABLE_AUTOLAUNCH   | Disable application from launching automatically                                            | (not set)             |
-| DISABLE_SYNC         | Disable syncing if using a RunPod network volume                                            | (not set)             |
-| EXTRA_ARGS           | Specify extra command line arguments for ComfyUI, eg. `--lowvram`, `--disable-xformers` etc | (not set)             |
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `DISABLE_AUTOLAUNCH` | Skip auto-starting ComfyUI | Not set (auto-launch enabled) |
+| `DISABLE_SYNC` | Skip syncing to persistent storage | Not set (sync enabled) |
+| `EXTRA_ARGS` | Additional ComfyUI arguments | Not set |
+| `PUBLIC_KEY` | SSH public key for remote access | Not set |
 
-## Logs
+### Model Provisioning
 
-ComfyUI creates a log file, and you can tail it instead of
-killing the service to view the logs
+#### Workflow Downloads
 
-| Application | Log file                    |
-|-------------|-----------------------------|
-| ComfyUI     | /workspace/logs/comfyui.log |
+```bash
+WORKFLOW1=https://example.com/workflow.json
+WORKFLOW2=https://example.com/my-workflow.zip
+# ... up to WORKFLOW50
+```
 
-## Community and Contributing
+Supports: `.json`, `.zip`, `.tar.gz`, `.tar.xz`, `.tar.bz2`, `.7z`
 
-Pull requests and issues on [GitHub](https://github.com/ashleykleynhans/comfyui-docker)
-are welcome. Bug fixes and new features are encouraged.
+#### Hugging Face Models (Categorized)
 
-## Appreciate my work?
+Download models to specific ComfyUI model directories:
 
-<a href="https://www.buymeacoffee.com/ashleyk" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+```bash
+# VAE models
+HF_MODEL_VAE1=stabilityai/sdxl-vae
+HF_MODEL_VAE_FILENAME1=sdxl_vae.safetensors
+
+# LoRA models
+HF_MODEL_LORA1=your-repo/your-lora
+HF_MODEL_LORA_FILENAME1=lora.safetensors
+
+# Diffusion models
+HF_MODEL_DIFFUSION_MODELS1=Comfy-Org/flux1-dev
+HF_MODEL_DIFFUSION_MODELS_FILENAME1=flux1-dev.safetensors
+
+# Text encoders
+HF_MODEL_TEXT_ENCODERS1=comfyanonymous/flux_text_encoders
+HF_MODEL_TEXT_ENCODERS_FILENAME1=t5xxl_fp16.safetensors
+
+# Upscale models
+HF_MODEL_UPSCALER1=your-repo/upscaler
+HF_MODEL_UPSCALER_PTH1=model.pth
+
+# CLIP Vision
+HF_MODEL_CLIP_VISION1=your-repo/clip
+HF_MODEL_CLIP_VISION_FILENAME1=clip.safetensors
+
+# Model Patches
+HF_MODEL_PATCHES1=your-repo/patch
+HF_MODEL_PATCHES_FILENAME1=patch.safetensors
+
+# Audio Encoders
+HF_MODEL_AUDIO_ENCODERS1=your-repo/audio
+HF_MODEL_AUDIO_ENCODERS_FILENAME1=audio.safetensors
+
+# Checkpoints
+HF_MODEL_CHECKPOINTS1=your-repo/checkpoint
+HF_MODEL_CHECKPOINTS_FILENAME1=checkpoint.safetensors
+
+# VLM (Vision-Language Models)
+HF_MODEL_VL1=your-repo/vlm
+HF_MODEL_VL_FILENAME1=vlm.safetensors
+
+# SAM models
+HF_MODEL_SAMS1=your-repo/sam
+HF_MODEL_SAMS_FILENAME1=sam.safetensors
+
+# Latent Upscale
+HF_MODEL_LATENT_UPSCALE1=your-repo/latent
+HF_MODEL_LATENT_UPSCALE_FILENAME1=latent.safetensors
+```
+
+Each category supports up to 20 indexed downloads (e.g., `HF_MODEL_VAE1` through `HF_MODEL_VAE20`)
+
+#### Generic Hugging Face Downloads
+
+For custom paths:
+
+```bash
+# Download single file
+HF_MODEL1=repo/model-name
+HF_MODEL_FILENAME1=specific_file.safetensors
+HF_MODEL_DIR1=models/custom_path
+
+# Download full model
+HF_FULL_MODEL1=repo/full-model
+HF_MODEL_DIR1=models/another_path
+
+# ... up to HF_MODEL20 / HF_FULL_MODEL20
+```
+
+#### CivitAI Downloads
+
+```bash
+CIVITAI_TOKEN=your_civitai_api_token
+CIVITAI_MODEL_LORA_URL1=https://civitai.com/api/download/models/123456
+CIVITAI_MODEL_LORA_URL2=https://civitai.com/api/download/models/789012
+# ... up to CIVITAI_MODEL_LORA_URL50
+```
+
+**Note:** `CIVITAI_TOKEN` is required for CivitAI downloads.
+
+## Directory Structure
+
+```
+/workspace/ComfyUI/
+├── models/
+│   ├── vae/                      # VAE models
+│   ├── upscale_models/           # Upscaler models
+│   ├── loras/                    # LoRA fine-tuning models
+│   ├── text_encoders/            # CLIP/Text encoders
+│   ├── clip_vision/              # CLIP vision models
+│   ├── model_patches/            # Model patches
+│   ├── audio_encoders/           # Audio encoders
+│   ├── diffusion_models/         # Main diffusion models
+│   ├── checkpoints/              # Model checkpoints
+│   ├── VLM/                      # Vision-Language Models
+│   ├── sams/                     # SAM models
+│   └── latent_upscale_models/    # Latent upscaling models
+├── user/default/workflows/       # Workflow files
+└── custom_nodes/                 # Custom nodes (50+ pre-installed)
+```
+
+## Pre-installed Custom Nodes
+
+This image includes 50+ custom nodes:
+
+- **rgthree-comfy**: Enhanced UI and utilities
+- **ComfyUI-Login**: Authentication and user management
+- **ComfyUI-KJNodes**: Extended node collection
+- **ComfyUI-RMBG**: Background removal
+- **ComfyUI-segment-anything-2**: SAM2 integration
+- **ComfyUI-JoyCaption**: Image captioning
+- **ComfyUI_UltimateSDUpscale**: Advanced upscaling
+- **ComfyUI-VideoHelperSuite**: Video processing
+- **ComfyUI-Impact-Pack**: Quality improvements
+- **ComfyUI-GGUF**: GGUF model support
+- **comfyui_controlnet_aux**: ControlNet preprocessing
+- **ComfyUI-Lora-Manager**: LoRA management
+- And 40+ more for various AI tasks
+
+## Service Ports
+
+| Service | Port | Description |
+|---------|------|-------------|
+| ComfyUI | 3000 | Main ComfyUI interface (proxied via NGINX) |
+| App Manager | 8000 | Application management dashboard |
+
+Internal ports (not exposed by default):
+- ComfyUI internal: 3001
+- Jupyter Lab: 8888
+- Code Server: 7777
+
+## Building Custom Variants
+
+Modify `docker-bake.hcl` to customize builds:
+
+```hcl
+variable "RELEASE" {
+    default = "v1.0.0"  # Your version
+}
+
+variable "REGISTRY_USER" {
+    default = "kiliankaslin"  # Your Docker Hub username
+}
+```
+
+## Advanced Configuration
+
+### Custom ComfyUI Arguments
+
+```bash
+docker run ... \
+  -e EXTRA_ARGS="--lowvram --disable-xformers" \
+  kiliankaslin/comfyui-production:tag
+```
+
+### SSH Access
+
+```bash
+docker run ... \
+  -p 22:22 \
+  -e PUBLIC_KEY="ssh-rsa AAAA..." \
+  kiliankaslin/comfyui-production:tag
+```
+
+### Disable Persistent Storage Sync
+
+```bash
+docker run ... \
+  -e DISABLE_SYNC=true \
+  kiliankaslin/comfyui-production:tag
+```
+
+## Example: Full FLUX Model Setup
+
+```bash
+docker run -it --gpus all \
+  -p 3000:3000 \
+  -p 8000:8000 \
+  -v $(pwd)/workspace:/workspace \
+  -e HF_MODEL_DIFFUSION_MODELS1=Comfy-Org/flux1-dev \
+  -e HF_MODEL_DIFFUSION_MODELS_FILENAME1=flux1-dev.safetensors \
+  -e HF_MODEL_TEXT_ENCODERS1=comfyanonymous/flux_text_encoders \
+  -e HF_MODEL_TEXT_ENCODERS_FILENAME1=t5xxl_fp16.safetensors \
+  -e HF_MODEL_TEXT_ENCODERS2=comfyanonymous/flux_text_encoders \
+  -e HF_MODEL_TEXT_ENCODERS_FILENAME2=clip_l.safetensors \
+  -e HF_MODEL_VAE1=black-forest-labs/FLUX.1-schnell \
+  -e HF_MODEL_VAE_FILENAME1=ae.safetensors \
+  -e WORKFLOW1=https://your-server.com/flux-workflow.json \
+  kiliankaslin/comfyui-production:cu128-py312-v1.0.0
+```
+
+## Troubleshooting
+
+### Models Not Downloading
+
+1. Check container logs: `docker logs <container-id>`
+2. Verify ComfyUI is online (wait 2-3 minutes after container start)
+3. Check environment variables are correctly set
+4. For CivitAI: Ensure `CIVITAI_TOKEN` is set
+
+### GPU Not Detected
+
+1. Verify NVIDIA drivers: `nvidia-smi`
+2. Check Docker GPU runtime: `docker run --gpus all nvidia/cuda:12.4.1-base-ubuntu22.04 nvidia-smi`
+3. Ensure `--gpus all` flag is used
+
+### Out of Memory
+
+Use VRAM optimizations:
+```bash
+-e EXTRA_ARGS="--lowvram"
+# or for very limited VRAM:
+-e EXTRA_ARGS="--novram"
+```
+
+## Architecture
+
+This setup combines:
+- **comfyui-docker**: Production-grade base with NGINX, App Manager, persistent sync
+- **run-comfyui-image**: Runtime model provisioning capabilities
+- **50+ Custom Nodes**: Extended functionality out of the box
+
+## License
+
+This Docker setup integrates various open-source projects. Refer to individual component licenses:
+- ComfyUI: GPL-3.0
+- Custom nodes: Various (see respective repositories)
+
+## Credits
+
+Built on top of:
+- [ashleykza/comfyui-docker](https://github.com/ashleykza/runpod-worker-comfy)
+- ComfyUI community custom nodes
+- RunPod infrastructure optimizations
+
+## Support
+
+For issues specific to this Docker setup:
+- Check the troubleshooting section above
+- Review container logs
+- Ensure all prerequisites are met (GPU drivers, Docker, etc.)
+
+For ComfyUI-specific issues:
+- Visit [ComfyUI GitHub](https://github.com/comfyanonymous/ComfyUI)
+- Check [ComfyUI Documentation](https://docs.comfy.org)

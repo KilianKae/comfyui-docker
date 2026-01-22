@@ -49,6 +49,11 @@ sync_directory() {
     local workspace_fs=$(df -T /workspace | awk 'NR==2 {print $2}')
     echo "SYNC: File system type: ${workspace_fs}"
 
+    # Show detailed breakdown of what's being synced
+    echo "SYNC: Analyzing source directory..."
+    echo "SYNC: Top directories by size:"
+    du -h --max-depth=1 "${src_dir}" 2>/dev/null | sort -hr | head -10 || true
+
     if [ "${workspace_fs}" = "fuse" ]; then
         if [ "$use_compression" = true ]; then
             echo "SYNC: Using tar with zstd compression for sync"
@@ -57,7 +62,10 @@ sync_directory() {
         fi
 
         # Get total size of source directory
+        echo "SYNC: Calculating total size..."
         local total_size=$(du -sb "${src_dir}" | cut -f1)
+        local total_size_hr=$(du -sh "${src_dir}" | cut -f1)
+        echo "SYNC: Total size to transfer: ${total_size_hr} (${total_size} bytes)"
 
         # Base tar command with optimizations
         local tar_cmd="tar --create \
@@ -79,18 +87,39 @@ sync_directory() {
             --record-size=64K \
             --sparse"
 
+        echo "SYNC: Starting transfer..."
+
+        # Background progress monitor - logs destination size every 30 seconds
+        (
+            while true; do
+                sleep 30
+                current=$(du -sh "${dst_dir}" 2>/dev/null | cut -f1)
+                pct=$(du -sb "${dst_dir}" 2>/dev/null | cut -f1)
+                if [ -n "$pct" ] && [ "$total_size" -gt 0 ]; then
+                    percent=$((pct * 100 / total_size))
+                    echo "[$(date '+%H:%M:%S')] SYNC: Progress - ${current} transferred (~${percent}%)"
+                else
+                    echo "[$(date '+%H:%M:%S')] SYNC: Progress - ${current} transferred"
+                fi
+            done
+        ) &
+        monitor_pid=$!
+
         if [ "$use_compression" = true ]; then
-            $tar_cmd | zstd -T0 -1 | pv -s ${total_size} | zstd -d -T0 | $tar_extract_cmd
+            $tar_cmd | zstd -T0 -1 | pv -pterb -s ${total_size} | zstd -d -T0 | $tar_extract_cmd
         else
-            $tar_cmd | pv -s ${total_size} | $tar_extract_cmd
+            $tar_cmd | pv -pterb -s ${total_size} | $tar_extract_cmd
         fi
+
+        kill $monitor_pid 2>/dev/null || true
 
     elif [ "${workspace_fs}" = "overlay" ] || [ "${workspace_fs}" = "xfs" ]; then
         echo "SYNC: Using rsync for sync"
-        rsync -rlptDu "${src_dir}/" "${dst_dir}/"
+        echo "SYNC: Starting transfer with progress..."
+        rsync -rlptDu --info=progress2 "${src_dir}/" "${dst_dir}/"
     else
         echo "SYNC: Unknown filesystem type (${workspace_fs}) for /workspace, defaulting to rsync"
-        rsync -rlptDu "${src_dir}/" "${dst_dir}/"
+        rsync -rlptDu --info=progress2 "${src_dir}/" "${dst_dir}/"
     fi
 }
 
@@ -128,7 +157,11 @@ fix_venvs() {
 if [ "$(printf '%s\n' "$EXISTING_VERSION" "$TEMPLATE_VERSION" | sort -V | head -n 1)" = "$EXISTING_VERSION" ]; then
     if [ "$EXISTING_VERSION" != "$TEMPLATE_VERSION" ]; then
         sync_apps
-        fix_venvs
+
+        # Only fix venvs if sync actually happened
+        if [ -z "${DISABLE_SYNC}" ]; then
+            fix_venvs
+        fi
 
         # Create logs directory
         mkdir -p /workspace/logs

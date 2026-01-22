@@ -1,0 +1,22 @@
+TARGET_DIR="/workspace/ComfyUI/models/loras"
+mkdir -p "$TARGET_DIR"
+
+for i in $(seq 1 50); do
+    VAR="CIVITAI_MODEL_LORA_URL${i}"
+    URL="${!VAR:-}"
+    if [[ -n "$URL" ]]; then
+        # Convert model page URL to API download URL
+        if [[ "$URL" == *"modelVersionId="* ]]; then
+            VERSION_ID=$(echo "$URL" | grep -oP 'modelVersionId=\K[0-9]+')
+            URL="https://civitai.com/api/download/models/${VERSION_ID}"
+        elif [[ "$URL" == *"/models/"* && "$URL" != *"/api/"* ]]; then
+            # URL like /models/123456 without version - need version ID
+            echo "⚠️ [$i] Missing modelVersionId in URL, skipping"
+            continue
+        fi
+        echo "Downloading [$i]: $URL"
+        download-model "$URL" "$TARGET_DIR" || echo "Failed: $URL"
+    fi
+done
+
+echo "Done!"
